@@ -10,4 +10,19 @@ class TodoModel {
     required this.todo,
     this.checked = false,
   });
+
+  TodoModel.fromJson(Map<String, dynamic> json)
+      : id = json['id'],
+        date = json['date'],
+        todo = json['todo'],
+        checked = json['checked'];
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'date': date,
+      'todo': todo,
+      'checked': checked,
+    };
+  }
 }

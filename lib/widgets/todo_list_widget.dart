@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_todo/models/todo_model.dart';
 import 'package:uuid/uuid.dart';
 
@@ -10,12 +13,13 @@ class TodoListWidget extends StatefulWidget {
 }
 
 class _TodoListWidgetState extends State<TodoListWidget> {
-  final _mainColor = const Color(0xFFE75480);
-  bool isCheck = false;
-  int lastIdx = 0;
   final fieldText = TextEditingController();
   final uuid = const Uuid();
-  late Map<String, TodoModel> todos;
+  late Map<String, dynamic> todos;
+  late Map<String, dynamic> todosJson;
+  late final SharedPreferences pref;
+
+  final _mainColor = const Color(0xFFE75480);
 
   void onToggleCheck(String key) {
     setState(() {
@@ -31,11 +35,24 @@ class _TodoListWidgetState extends State<TodoListWidget> {
     fieldText.clear();
   }
 
+  void initPref() async {
+    pref = await SharedPreferences.getInstance();
+
+    pref.setString('todo', '');
+    var prefTodo = pref.getString('todo');
+
+    if (prefTodo != null) {
+      // todos = TodoModel.fromJson(jsonDecode(prefTodo));
+    }
+  }
+
   @override
   void initState() {
     super.initState();
 
     todos = {};
+    todosJson = {};
+    initPref();
   }
 
   void onSubmitTodo(String value) {
@@ -54,7 +71,17 @@ class _TodoListWidgetState extends State<TodoListWidget> {
 
     setState(() {
       todos[uniId] = todo;
+      todosJson[uniId] = todo.toJson();
     });
+
+    var jsonTodos = jsonEncode(todos);
+    Map<String, dynamic> jsonTests = jsonDecode(jsonTodos);
+
+    jsonTests.forEach((key, value) {
+      print(value);
+    });
+
+    pref.setString('todo', jsonTodos);
   }
 
   @override
