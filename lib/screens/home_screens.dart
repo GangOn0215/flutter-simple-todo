@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:simple_todo/widgets/todo_list_widget.dart';
+import 'package:simple_todo/widgets/todo_widget.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -24,7 +24,7 @@ class HomeScreen extends StatelessWidget {
           color: _mainColor,
         ),
       ),
-      body: const TodoListWidget(),
+      body: const TodoWidget(),
     );
   }
 }

@@ -3,10 +3,15 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_todo/models/todo_model.dart';
-import 'package:uuid/uuid.dart';
 
 class TodoListWidget extends StatefulWidget {
-  const TodoListWidget({super.key});
+  late Map<String, dynamic> todos;
+  late SharedPreferences pref;
+  TodoListWidget({
+    super.key,
+    required this.todos,
+    required this.pref,
+  });
 
   @override
   State<TodoListWidget> createState() => _TodoListWidgetState();
@@ -14,138 +19,94 @@ class TodoListWidget extends StatefulWidget {
 
 class _TodoListWidgetState extends State<TodoListWidget> {
   final fieldText = TextEditingController();
-  final uuid = const Uuid();
-  late Map<String, dynamic> todos;
-  late Map<String, dynamic> todosJson;
-  late final SharedPreferences pref;
-
-  final _mainColor = const Color(0xFFE75480);
-
-  void onToggleCheck(String key) {
-    setState(() {
-      TodoModel temp = todos[key]!;
-
-      temp.checked = !temp.checked;
-
-      todos.update(key, (value) => temp);
-    });
-  }
-
-  void clearText() {
-    fieldText.clear();
-  }
-
-  void initPref() async {
-    pref = await SharedPreferences.getInstance();
-
-    pref.setString('todo', '');
-    var prefTodo = pref.getString('todo');
-
-    if (prefTodo != null) {
-      // todos = TodoModel.fromJson(jsonDecode(prefTodo));
-    }
-  }
+  late List<String> todoKeys;
 
   @override
   void initState() {
     super.initState();
 
-    todos = {};
-    todosJson = {};
-    initPref();
+    todoKeys = widget.todos.keys.toList();
   }
 
-  void onSubmitTodo(String value) {
-    if (value == '') {
-      return;
-    }
+  static const String prefTable = 'todo';
 
-    var uniId = uuid.v4();
-    TodoModel todo = TodoModel(
-      id: uniId,
-      date: DateTime.now().toString(),
-      todo: value,
-    );
+  final _mainColor = const Color(0xFFE75480);
 
-    clearText();
+  void clearText() => fieldText.clear();
 
-    setState(() {
-      todos[uniId] = todo;
-      todosJson[uniId] = todo.toJson();
-    });
+  // update check
+  void onToggleCheck(String key) {
+    TodoModel temp = widget.todos[key]!;
 
-    var jsonTodos = jsonEncode(todos);
-    Map<String, dynamic> jsonTests = jsonDecode(jsonTodos);
+    temp.checked = !temp.checked;
 
-    jsonTests.forEach((key, value) {
-      print(value);
-    });
+    widget.todos.update(key, (value) => temp);
 
-    pref.setString('todo', jsonTodos);
+    widget.pref.remove(prefTable);
+    widget.pref.setString(prefTable, jsonEncode(widget.todos));
+
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        vertical: 20,
-        horizontal: 50,
-      ),
-      child: Column(
-        children: [
-          TextField(
-            onSubmitted: onSubmitTodo,
-            controller: fieldText,
-            decoration: InputDecoration(
-              contentPadding: const EdgeInsets.fromLTRB(1, 15, 5, -1),
-              enabledBorder: const UnderlineInputBorder(
-                borderSide: BorderSide(color: Colors.black),
-              ),
-              focusedBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: _mainColor),
-              ),
-            ),
-          ),
-          for (MapEntry todoRow in todos.entries)
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  child: Row(
-                    children: [
-                      Transform.scale(
-                        scale: 0.3,
-                        child: const Icon(
-                          Icons.square,
-                          color: Colors.deepOrange,
-                          size: 20,
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Text(
-                        todoRow.value.todo,
-                        style: const TextStyle(
-                          fontSize: 14,
-                        ),
-                      ),
-                    ],
+    return Column(
+      children: [
+        widget.todos.isNotEmpty
+            ? Container(
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(3),
                   ),
                 ),
-                IconButton(
-                  onPressed: () => onToggleCheck(todoRow.key),
-                  icon: Icon(
-                    todoRow.value.checked
-                        ? Icons.check_box_rounded
-                        : Icons.check_box_outline_blank_rounded,
-                  ),
-                  color: Colors.deepOrange,
-                )
-              ],
-            )
-        ],
-      ),
+                height: 600,
+                child: ListView.builder(
+                  itemCount: 10,
+                  itemBuilder: (context, index) {
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          child: Row(
+                            children: [
+                              Transform.scale(
+                                scale: 0.3,
+                                child: const Icon(
+                                  Icons.square,
+                                  color: Colors.deepOrange,
+                                  size: 20,
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                widget.todos[todoKeys[index]].todo,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () => onToggleCheck(todoKeys[index]),
+                          icon: Icon(
+                            widget.todos[todoKeys[index]].checked
+                                ? Icons.check_box_rounded
+                                : Icons.check_box_outline_blank_rounded,
+                          ),
+                          color: Colors.deepOrange,
+                        )
+                      ],
+                    );
+                  },
+                ),
+              )
+            : const Center(
+                child: CircularProgressIndicator(),
+              )
+      ],
     );
   }
 }
