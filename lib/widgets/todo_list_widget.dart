@@ -55,7 +55,10 @@ class _TodoListWidgetState extends State<TodoListWidget> {
     widget.todosKeys = widget.todos.keys.toList();
 
     widget.pref.remove(prefTable);
-    widget.pref.setString(prefTable, jsonEncode(widget.todos));
+
+    if (widget.todos.isNotEmpty) {
+      widget.pref.setString(prefTable, jsonEncode(widget.todos));
+    }
 
     setState(() {});
   }
@@ -88,9 +91,7 @@ class _TodoListWidgetState extends State<TodoListWidget> {
             ),
           )
         else
-          const Center(
-            child: CircularProgressIndicator(),
-          )
+          const Center()
       ],
     );
   }

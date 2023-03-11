@@ -70,6 +70,11 @@ class _TodoscreenState extends State<Todoscreen> {
       todo: value,
     );
 
+    if (todos.isEmpty) {
+      todos = {};
+      todoKeys = [];
+    }
+
     setState(() {
       todos[uniId] = todo;
       todoKeys.add(uniId);
