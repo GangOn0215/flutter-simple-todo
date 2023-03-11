@@ -36,12 +36,23 @@ class _TodoListWidgetState extends State<TodoListWidget> {
   void clearText() => fieldText.clear();
 
   // update check
-  void onToggleCheck(String key, TodoModel updateData) {
+  void onToggleCheck({required String key, required TodoModel updateData}) {
     TodoModel temp = updateData;
 
     temp.checked = !temp.checked;
 
     widget.todos.update(key, (value) => temp);
+
+    widget.pref.remove(prefTable);
+    widget.pref.setString(prefTable, jsonEncode(widget.todos));
+
+    setState(() {});
+  }
+
+  void onDelete({required String key}) {
+    widget.todos.remove(key);
+
+    widget.todosKeys = widget.todos.keys.toList();
 
     widget.pref.remove(prefTable);
     widget.pref.setString(prefTable, jsonEncode(widget.todos));
@@ -61,16 +72,19 @@ class _TodoListWidgetState extends State<TodoListWidget> {
                 Radius.circular(3),
               ),
             ),
-            //   widget.todos[widget.todosKeys[index]]
-            child: ListView.builder(
+            child: ListView.separated(
               physics: const BouncingScrollPhysics(),
               itemCount: widget.todosKeys.length,
               itemBuilder: (context, index) {
                 return TodoRowWidget(
                   todoRow: widget.todos[widget.todosKeys[index]],
                   onToggleCheck: onToggleCheck,
+                  onDelete: onDelete,
                 );
               },
+              separatorBuilder: (context, index) => const SizedBox(
+                height: 10,
+              ),
             ),
           )
         else
