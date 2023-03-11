@@ -9,12 +9,14 @@ class TodoListWidget extends StatefulWidget {
   late SharedPreferences pref;
   late Map<String, dynamic> todos;
   late List<String> todosKeys;
+  late String pickDate;
 
   TodoListWidget({
     super.key,
     required this.todos,
     required this.pref,
     required this.todosKeys,
+    required this.pickDate,
   });
 
   @override
@@ -23,10 +25,30 @@ class TodoListWidget extends StatefulWidget {
 
 class _TodoListWidgetState extends State<TodoListWidget> {
   final fieldText = TextEditingController();
+  late Map<String, dynamic> todosFillter;
+  late List<String> todoFiltersKeys;
 
   @override
   void initState() {
     super.initState();
+    todosFillter = {};
+    todoFiltersKeys = [];
+
+    initFillterTodo();
+  }
+
+  void initFillterTodo() {
+    todosFillter = {};
+
+    widget.todos.forEach((key, value) {
+      if (value is TodoModel) {
+        if (widget.pickDate == value.date) {
+          todosFillter[key] = value;
+        }
+      }
+    });
+
+    todoFiltersKeys = todosFillter.keys.toList();
   }
 
   static const String prefTable = 'todo';
@@ -65,9 +87,11 @@ class _TodoListWidgetState extends State<TodoListWidget> {
 
   @override
   Widget build(BuildContext context) {
+    initFillterTodo();
+
     return Column(
       children: [
-        if (widget.todos.isNotEmpty)
+        if (todosFillter.isNotEmpty)
           Container(
             height: 600,
             decoration: const BoxDecoration(
@@ -77,10 +101,10 @@ class _TodoListWidgetState extends State<TodoListWidget> {
             ),
             child: ListView.separated(
               physics: const BouncingScrollPhysics(),
-              itemCount: widget.todosKeys.length,
+              itemCount: todosFillter.length,
               itemBuilder: (context, index) {
                 return TodoRowWidget(
-                  todoRow: widget.todos[widget.todosKeys[index]],
+                  todoRow: todosFillter[todoFiltersKeys[index]],
                   onToggleCheck: onToggleCheck,
                   onDelete: onDelete,
                 );

@@ -21,7 +21,7 @@ class _TodoscreenState extends State<Todoscreen> {
   final _mainColor = const Color(0xFFE75480);
   final fieldText = TextEditingController();
   final uuid = const Uuid();
-  final todayDate = getCurrentDate();
+  late String pickDate;
 
   late Map<String, dynamic> todos;
   late List<String> todoKeys;
@@ -53,6 +53,7 @@ class _TodoscreenState extends State<Todoscreen> {
 
     todos = {};
     todoKeys = [];
+    pickDate = getCurrentDate();
     initPref();
   }
 
@@ -66,8 +67,9 @@ class _TodoscreenState extends State<Todoscreen> {
 
     TodoModel todo = TodoModel(
       id: uniId,
-      date: getCurrentDateTime(),
+      date: pickDate,
       todo: value,
+      regDate: getCurrentDateTime(),
     );
 
     if (todos.isEmpty) {
@@ -93,15 +95,44 @@ class _TodoscreenState extends State<Todoscreen> {
     setState(() {});
   }
 
+  void onClickNextDay() {
+    setState(() {
+      pickDate = setDateTomorrow(pickDate);
+    });
+  }
+
+  void onClickPrevDay() {
+    setState(() {
+      pickDate = setDateYesterday(pickDate);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: false, // 키보드 나올때 앱 자체가 말려올라가는거 방지
       appBar: AppBar(
         centerTitle: true,
-        title: Text(
-          todayDate,
-          style: const TextStyle(fontSize: 16),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            IconButton(
+              onPressed: onClickPrevDay,
+              icon: const Icon(
+                Icons.arrow_back_ios_new_outlined,
+              ),
+            ),
+            Text(
+              pickDate,
+              style: const TextStyle(fontSize: 16),
+            ),
+            IconButton(
+              onPressed: onClickNextDay,
+              icon: const Icon(
+                Icons.arrow_forward_ios_outlined,
+              ),
+            ),
+          ],
         ),
         backgroundColor: _mainDarkColor,
         leading: Icon(
@@ -150,6 +181,7 @@ class _TodoscreenState extends State<Todoscreen> {
                     pref: pref,
                     todos: todos,
                     todosKeys: todoKeys,
+                    pickDate: pickDate,
                   )
                 : Container()
           ],
