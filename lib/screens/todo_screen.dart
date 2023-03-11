@@ -21,6 +21,7 @@ class _TodoscreenState extends State<Todoscreen> {
   final _mainColor = const Color(0xFFE75480);
   final fieldText = TextEditingController();
   final uuid = const Uuid();
+  final todayDate = getCurrentDate();
 
   late Map<String, dynamic> todos;
   late List<String> todoKeys;
@@ -32,7 +33,6 @@ class _TodoscreenState extends State<Todoscreen> {
   Future initPref() async {
     pref = await SharedPreferences.getInstance();
 
-    // pref.setString('todo', '');
     var prefTodo = pref.getString('todo');
 
     if (prefTodo != null) {
@@ -57,28 +57,27 @@ class _TodoscreenState extends State<Todoscreen> {
   }
 
   void onSubmitTodo(String value) {
+    String uniId = uuid.v4();
+    clearText();
+
     if (value == '') {
       return;
     }
 
-    String uniId = uuid.v4();
-
     TodoModel todo = TodoModel(
       id: uniId,
-      date: getCurrentDate(),
+      date: getCurrentDateTime(),
       todo: value,
     );
-
-    clearText();
-
-    String jsonTodos = jsonEncode(todos);
-
-    pref.setString(prefTable, jsonTodos);
 
     setState(() {
       todos[uniId] = todo;
       todoKeys.add(uniId);
     });
+
+    String jsonTodos = jsonEncode(todos);
+
+    pref.setString(prefTable, jsonTodos);
   }
 
   void onReset() {
@@ -95,9 +94,9 @@ class _TodoscreenState extends State<Todoscreen> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         centerTitle: true,
-        title: const Text(
-          '2023-03-09',
-          style: TextStyle(fontSize: 16),
+        title: Text(
+          todayDate,
+          style: const TextStyle(fontSize: 16),
         ),
         backgroundColor: _mainDarkColor,
         leading: Icon(
