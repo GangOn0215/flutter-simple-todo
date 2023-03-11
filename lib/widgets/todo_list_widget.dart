@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_todo/models/todo_model.dart';
+import 'package:simple_todo/widgets/todo_row_widget.dart';
 
 class TodoListWidget extends StatefulWidget {
   late SharedPreferences pref;
@@ -35,8 +36,8 @@ class _TodoListWidgetState extends State<TodoListWidget> {
   void clearText() => fieldText.clear();
 
   // update check
-  void onToggleCheck(String key) {
-    TodoModel temp = widget.todos[key]!;
+  void onToggleCheck(String key, TodoModel updateData) {
+    TodoModel temp = updateData;
 
     temp.checked = !temp.checked;
 
@@ -60,48 +61,14 @@ class _TodoListWidgetState extends State<TodoListWidget> {
                 Radius.circular(3),
               ),
             ),
+            //   widget.todos[widget.todosKeys[index]]
             child: ListView.builder(
               physics: const BouncingScrollPhysics(),
               itemCount: widget.todosKeys.length,
               itemBuilder: (context, index) {
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      child: Row(
-                        children: [
-                          Transform.scale(
-                            scale: 0.3,
-                            child: const Icon(
-                              Icons.square,
-                              color: Colors.deepOrange,
-                              size: 20,
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Text(
-                            widget.todos[widget.todosKeys[index]].todo,
-                            style: const TextStyle(
-                              fontSize: 14,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () => onToggleCheck(
-                        widget.todosKeys[index],
-                      ),
-                      icon: Icon(
-                        widget.todos[widget.todosKeys[index]].checked
-                            ? Icons.check_box_rounded
-                            : Icons.check_box_outline_blank_rounded,
-                      ),
-                      color: Colors.deepOrange,
-                    )
-                  ],
+                return TodoRowWidget(
+                  todoRow: widget.todos[widget.todosKeys[index]],
+                  onToggleCheck: onToggleCheck,
                 );
               },
             ),

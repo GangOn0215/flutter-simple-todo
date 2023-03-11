@@ -1,7 +1,13 @@
 import 'package:intl/intl.dart';
 
-String getCurrentDate() {
-  var dateUtc = DateTime.now().toUtc().add(const Duration(hours: 9));
+DateTime getUtcKrDateTime() {
+  return DateTime.now().toUtc().add(const Duration(hours: 9));
+}
 
-  return DateFormat('yyyy-MM-dd HH:mm').format(dateUtc);
+String getCurrentDateTime() {
+  return DateFormat('yyyy-MM-dd HH:mm').format(getUtcKrDateTime());
+}
+
+String getCurrentDate() {
+  return DateFormat('yyyy-MM-dd').format(getUtcKrDateTime());
 }
