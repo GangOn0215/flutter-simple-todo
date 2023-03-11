@@ -1,16 +1,4 @@
-# simple_todo
+# 🌸 simple_todo
 
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+2주간 Dart 언어, 플러터에 대해 강의 들으며 따라해보고, <br>
+기반부터 새로만들어서 공부를 하며 익숙해져서 어떠한 강의도 보지 않고 이제 내가 원하는 앱을 만들어 볼 예정
