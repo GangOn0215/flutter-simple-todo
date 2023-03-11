@@ -1,30 +1,30 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_todo/models/todo_model.dart';
 import 'package:simple_todo/utils/common.dart';
 import 'package:simple_todo/widgets/todo_list_widget.dart';
 import 'package:uuid/uuid.dart';
 
-class TodoWidget extends StatefulWidget {
-  const TodoWidget({super.key});
+class Todoscreen extends StatefulWidget {
+  const Todoscreen({super.key});
 
   @override
-  State<TodoWidget> createState() => _TodoWidgetState();
+  State<Todoscreen> createState() => _TodoscreenState();
 }
 
-class _TodoWidgetState extends State<TodoWidget> {
+class _TodoscreenState extends State<Todoscreen> {
   final _mainDarkColor = const Color(0XFF282B30);
   final _mainBackground = const Color(0XFF1E2124);
   final _mainDiscordColor = const Color(0XFF7289da);
   final _mainColor = const Color(0xFFE75480);
-
   final fieldText = TextEditingController();
   final uuid = const Uuid();
+
   late Map<String, dynamic> todos;
-  late final SharedPreferences pref;
+  late List<String> todoKeys;
+  late final SharedPreferences pref; // 내부 저장
   static const String prefTable = 'todo';
 
   void clearText() => fieldText.clear();
@@ -42,6 +42,7 @@ class _TodoWidgetState extends State<TodoWidget> {
         todos[key] = TodoModel.fromJson(value);
       });
 
+      todoKeys = todos.keys.toList();
       setState(() {});
     }
   }
@@ -51,6 +52,7 @@ class _TodoWidgetState extends State<TodoWidget> {
     super.initState();
 
     todos = {};
+    todoKeys = [];
     initPref();
   }
 
@@ -60,8 +62,6 @@ class _TodoWidgetState extends State<TodoWidget> {
     }
 
     String uniId = uuid.v4();
-    final dateformat = DateFormat('yyyy-MM-dd hh:mm');
-    // print(dateformat.format(DateTime.now().toUtc()));
 
     TodoModel todo = TodoModel(
       id: uniId,
@@ -71,18 +71,20 @@ class _TodoWidgetState extends State<TodoWidget> {
 
     clearText();
 
-    setState(() {
-      todos[uniId] = todo;
-    });
-
     String jsonTodos = jsonEncode(todos);
 
     pref.setString(prefTable, jsonTodos);
+
+    setState(() {
+      todos[uniId] = todo;
+      todoKeys.add(uniId);
+    });
   }
 
   void onReset() {
-    todos = {};
     pref.remove(prefTable);
+    todos = {};
+    todoKeys = [];
 
     setState(() {});
   }
@@ -90,6 +92,7 @@ class _TodoWidgetState extends State<TodoWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
@@ -135,14 +138,16 @@ class _TodoWidgetState extends State<TodoWidget> {
                 ),
               ),
             ),
+            const SizedBox(
+              height: 20,
+            ),
             todos.isNotEmpty
                 ? TodoListWidget(
-                    todos: todos,
                     pref: pref,
+                    todos: todos,
+                    todosKeys: todoKeys,
                   )
-                : const Center(
-                    child: CircularProgressIndicator(),
-                  )
+                : Container()
           ],
         ),
       ),
