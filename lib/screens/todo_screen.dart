@@ -107,6 +107,21 @@ class _TodoscreenState extends State<Todoscreen> {
     });
   }
 
+  Future _selectDate(BuildContext context) async {
+    final DateTime? selected = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
+    if (selected != null) {
+      setState(() {
+        // pickDate = (DateFormat.yMMMd()).format(selected);
+        pickDate = getCurrentDateToSelected(selected);
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -122,9 +137,10 @@ class _TodoscreenState extends State<Todoscreen> {
                 Icons.arrow_back_ios_new_outlined,
               ),
             ),
-            Text(
-              pickDate,
-              style: const TextStyle(fontSize: 16),
+            TextButton(
+              onPressed: () => _selectDate(context),
+              child: Text(pickDate,
+                  style: const TextStyle(fontSize: 16, color: Colors.white)),
             ),
             IconButton(
               onPressed: onClickNextDay,

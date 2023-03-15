@@ -1,7 +1,7 @@
 import 'package:intl/intl.dart';
 
 DateTime getUtcKrDateTime() {
-  return DateTime.now().toUtc().add(const Duration(hours: 9));
+  return DateTime.now().toUtc();
 }
 
 String getCurrentDateTime() {
@@ -10,6 +10,10 @@ String getCurrentDateTime() {
 
 String getCurrentDate() {
   return DateFormat('yyyy-MM-dd').format(getUtcKrDateTime());
+}
+
+String getCurrentDateToSelected(DateTime date) {
+  return DateFormat('yyyy-MM-dd').format(date);
 }
 
 // date - 2023-03-11
