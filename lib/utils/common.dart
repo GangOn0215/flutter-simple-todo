@@ -16,6 +16,12 @@ String getCurrentDateToSelected(DateTime date) {
   return DateFormat('yyyy-MM-dd').format(date);
 }
 
+DateTime getLastDayOfMonth() {
+  DateTime now = getUtcKrDateTime();
+
+  return DateTime(now.year, now.month + 1, 0);
+}
+
 // date - 2023-03-11
 String setDateTomorrow(String date) {
   DateTime tomorrow = DateTime.parse(date).add(const Duration(days: 1));

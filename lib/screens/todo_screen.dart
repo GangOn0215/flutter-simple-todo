@@ -109,10 +109,28 @@ class _TodoscreenState extends State<Todoscreen> {
 
   Future _selectDate(BuildContext context) async {
     final DateTime? selected = await showDatePicker(
+      locale: const Locale('ko', 'KR'),
       context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(1900),
-      lastDate: DateTime.now(),
+      initialDate: DateTime.parse(pickDate),
+      firstDate: DateTime(2023),
+      lastDate: DateTime(2025),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.dark(
+              primary: _mainColor,
+              onSurface: _mainColor,
+              onPrimary: Colors.black,
+            ),
+            dialogBackgroundColor: Colors.black54,
+            textTheme: const TextTheme(
+              titleMedium: TextStyle(color: Colors.white),
+              titleLarge: TextStyle(color: Colors.white),
+            ),
+          ),
+          child: child!,
+        );
+      },
     );
     if (selected != null) {
       setState(() {
