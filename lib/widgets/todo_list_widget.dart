@@ -115,7 +115,7 @@ class _TodoListWidgetState extends State<TodoListWidget> {
             ),
           )
         else
-          const Center()
+          const Center(),
       ],
     );
   }

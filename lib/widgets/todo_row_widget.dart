@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:simple_todo/models/todo_model.dart';
+import 'package:simple_todo/widgets/todo_detail_modal_widget.dart';
 
 class TodoRowWidget extends StatefulWidget {
   final TodoModel todoRow;
@@ -51,13 +52,35 @@ class _TodoRowWidgetState extends State<TodoRowWidget> {
             ),
             SizedBox(
               width: 200,
-              child: Text(
-                widget.todoRow.todo,
-                overflow: TextOverflow.fade,
-                maxLines: 1,
-                softWrap: false,
-                style: const TextStyle(
-                  fontSize: 14,
+              child: TextButton(
+                onPressed: () {
+                  showModalBottomSheet(
+                    context: context,
+                    builder: (context) {
+                      return TodoDetailModalWidget(
+                        todoRow: widget.todoRow,
+                      );
+                    },
+                  );
+                },
+                style: TextButton.styleFrom(
+                  alignment: Alignment.bottomLeft,
+                ),
+                child: Text(
+                  widget.todoRow.todo,
+                  overflow: TextOverflow.fade,
+                  maxLines: 1,
+                  softWrap: false,
+                  style: widget.todoRow.checked
+                      ? const TextStyle(
+                          fontSize: 14,
+                          decoration: TextDecoration.lineThrough,
+                          decorationThickness: 3,
+                          color: Colors.grey,
+                        )
+                      : const TextStyle(
+                          color: Colors.black,
+                        ),
                 ),
               ),
             ),
