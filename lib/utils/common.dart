@@ -1,7 +1,7 @@
 import 'package:intl/intl.dart';
 
 DateTime getUtcKrDateTime() {
-  return DateTime.now().toUtc();
+  return DateTime.now().toUtc().add(const Duration(hours: 9));
 }
 
 String getCurrentDateTime() {

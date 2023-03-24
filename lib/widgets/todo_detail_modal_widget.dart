@@ -12,7 +12,7 @@ class TodoDetailModalWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 200,
+      height: 300,
       padding: const EdgeInsets.symmetric(
         vertical: 20,
         horizontal: 50,
@@ -93,6 +93,22 @@ class TodoDetailModalWidget extends StatelessWidget {
               )
             ],
           ),
+          const SizedBox(
+            height: 30,
+          ),
+          Row(
+            children: [
+              SizedBox(
+                width: (MediaQuery.of(context).size.width * 1) - 100,
+                child: ElevatedButton(
+                  onPressed: () {},
+                  child: const Text(
+                    'Modify',
+                  ),
+                ),
+              )
+            ],
+          )
         ],
       ),
     );
