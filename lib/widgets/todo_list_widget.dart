@@ -58,12 +58,8 @@ class _TodoListWidgetState extends State<TodoListWidget> {
   void clearText() => fieldText.clear();
 
   // update check
-  void onToggleCheck({required String key, required TodoModel updateData}) {
-    TodoModel temp = updateData;
-
-    temp.checked = !temp.checked;
-
-    widget.todos.update(key, (value) => temp);
+  void onUpdate({required String key, required TodoModel updateData}) {
+    widget.todos.update(key, (value) => updateData);
 
     widget.pref.remove(prefTable);
     widget.pref.setString(prefTable, jsonEncode(widget.todos));
@@ -105,7 +101,7 @@ class _TodoListWidgetState extends State<TodoListWidget> {
               itemBuilder: (context, index) {
                 return TodoRowWidget(
                   todoRow: todosFillter[todoFiltersKeys[index]],
-                  onToggleCheck: onToggleCheck,
+                  onUpdate: onUpdate,
                   onDelete: onDelete,
                 );
               },

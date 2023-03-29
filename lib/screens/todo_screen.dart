@@ -70,6 +70,8 @@ class _TodoscreenState extends State<Todoscreen> {
       date: pickDate,
       todo: value,
       regDate: getCurrentDateTime(),
+      content: null,
+      updateDate: null,
     );
 
     if (todos.isEmpty) {

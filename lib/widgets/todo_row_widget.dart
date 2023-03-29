@@ -4,13 +4,13 @@ import 'package:simple_todo/widgets/todo_detail_modal_widget.dart';
 
 class TodoRowWidget extends StatefulWidget {
   final TodoModel todoRow;
-  final Function onToggleCheck;
+  final Function onUpdate;
   final Function onDelete;
 
   const TodoRowWidget({
     super.key,
     required this.todoRow,
-    required this.onToggleCheck,
+    required this.onUpdate,
     required this.onDelete,
   });
 
@@ -20,7 +20,9 @@ class TodoRowWidget extends StatefulWidget {
 
 class _TodoRowWidgetState extends State<TodoRowWidget> {
   void onCheck() {
-    widget.onToggleCheck(
+    widget.todoRow.checked = !widget.todoRow.checked;
+
+    widget.onUpdate(
       key: widget.todoRow.id,
       updateData: widget.todoRow,
     );
@@ -55,10 +57,12 @@ class _TodoRowWidgetState extends State<TodoRowWidget> {
               child: TextButton(
                 onPressed: () {
                   showModalBottomSheet(
+                    isScrollControlled: true,
                     context: context,
                     builder: (context) {
                       return TodoDetailModalWidget(
                         todoRow: widget.todoRow,
+                        onUpdate: widget.onUpdate,
                       );
                     },
                   );
