@@ -23,6 +23,8 @@ class _TodoscreenState extends State<Todoscreen> {
   final uuid = const Uuid();
   late String pickDate;
 
+  bool isModal = false;
+
   late Map<String, dynamic> todos;
   late List<String> todoKeys;
   late final SharedPreferences pref; // 내부 저장
@@ -94,6 +96,7 @@ class _TodoscreenState extends State<Todoscreen> {
     todos = {};
     todoKeys = [];
 
+    Navigator.of(context).pop();
     setState(() {});
   }
 
@@ -107,6 +110,12 @@ class _TodoscreenState extends State<Todoscreen> {
     setState(() {
       pickDate = setDateYesterday(pickDate);
     });
+  }
+
+  void onClickDeleteAll() {
+    isModal = !isModal;
+
+    setState(() {});
   }
 
   Future _selectDate(BuildContext context) async {
@@ -179,7 +188,7 @@ class _TodoscreenState extends State<Todoscreen> {
           Row(
             children: [
               IconButton(
-                onPressed: onReset,
+                onPressed: () => _asyncConfirmDialog(context),
                 icon: Icon(
                   Icons.delete_forever,
                   color: _mainColor,
@@ -223,6 +232,39 @@ class _TodoscreenState extends State<Todoscreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Future<void> _asyncConfirmDialog(BuildContext context) async {
+    return showDialog<void>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text(
+            '삭제',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          content: const Text('전체 삭제 하시겠습니까? 🌸'),
+          actions: <Widget>[
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: _mainBackground,
+              ),
+              child: const Text('취소'),
+            ),
+            ElevatedButton(
+              onPressed: onReset,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: _mainBackground,
+              ),
+              child: const Text('확인'),
+            )
+          ],
+        );
+      },
     );
   }
 }

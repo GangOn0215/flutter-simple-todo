@@ -31,7 +31,14 @@ class _TodoDetailModalWidgetState extends State<TodoDetailModalWidget> {
   }
 
   void onUpdate() {
-    widget.todoRow.todo = fieldText.value.text;
+    String tempText = fieldText.value.text;
+    if (tempText == '') {
+      fieldText.text = widget.todoRow.todo;
+
+      return;
+    }
+
+    widget.todoRow.todo = tempText;
 
     widget.onUpdate(
       key: widget.todoRow.id,

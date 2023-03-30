@@ -106,7 +106,7 @@ class _TodoListWidgetState extends State<TodoListWidget> {
                 );
               },
               separatorBuilder: (context, index) => const SizedBox(
-                height: 10,
+                height: 0,
               ),
             ),
           )

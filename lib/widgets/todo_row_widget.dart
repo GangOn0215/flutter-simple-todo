@@ -78,11 +78,14 @@ class _TodoRowWidgetState extends State<TodoRowWidget> {
                   style: widget.todoRow.checked
                       ? const TextStyle(
                           fontSize: 14,
+                          height: 1,
                           decoration: TextDecoration.lineThrough,
                           decorationThickness: 3,
                           color: Colors.grey,
                         )
                       : const TextStyle(
+                          fontSize: 14,
+                          height: 1,
                           color: Colors.black,
                         ),
                 ),
