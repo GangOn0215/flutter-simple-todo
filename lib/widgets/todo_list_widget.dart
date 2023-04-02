@@ -99,10 +99,26 @@ class _TodoListWidgetState extends State<TodoListWidget> {
               physics: const BouncingScrollPhysics(),
               itemCount: todosFillter.length,
               itemBuilder: (context, index) {
-                return TodoRowWidget(
-                  todoRow: todosFillter[todoFiltersKeys[index]],
-                  onUpdate: onUpdate,
-                  onDelete: onDelete,
+                return Dismissible(
+                  onDismissed: (direction) {
+                    onDelete(key: todoFiltersKeys[index]);
+                  },
+                  key: UniqueKey(),
+                  background: Container(
+                    color: Colors.red,
+                    alignment: Alignment.centerLeft,
+                    child: const Icon(Icons.delete),
+                  ),
+                  secondaryBackground: Container(
+                    color: const Color(0XFFff1a5e),
+                    alignment: Alignment.center,
+                    child: const Icon(Icons.delete),
+                  ),
+                  direction: DismissDirection.endToStart,
+                  child: TodoRowWidget(
+                    todoRow: todosFillter[todoFiltersKeys[index]],
+                    onUpdate: onUpdate,
+                  ),
                 );
               },
               separatorBuilder: (context, index) => const SizedBox(

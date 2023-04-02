@@ -5,13 +5,11 @@ import 'package:simple_todo/widgets/todo_detail_modal_widget.dart';
 class TodoRowWidget extends StatefulWidget {
   final TodoModel todoRow;
   final Function onUpdate;
-  final Function onDelete;
 
   const TodoRowWidget({
     super.key,
     required this.todoRow,
     required this.onUpdate,
-    required this.onDelete,
   });
 
   @override
@@ -25,12 +23,6 @@ class _TodoRowWidgetState extends State<TodoRowWidget> {
     widget.onUpdate(
       key: widget.todoRow.id,
       updateData: widget.todoRow,
-    );
-  }
-
-  void onDelete() {
-    widget.onDelete(
-      key: widget.todoRow.id,
     );
   }
 
@@ -94,7 +86,6 @@ class _TodoRowWidgetState extends State<TodoRowWidget> {
           ],
         ),
         SizedBox(
-          width: 45,
           child: Row(
             children: [
               commonButton(
@@ -107,14 +98,6 @@ class _TodoRowWidgetState extends State<TodoRowWidget> {
               const SizedBox(
                 width: 5,
               ),
-              if (widget.todoRow.checked)
-                commonButton(
-                  onDelete,
-                  Icons.delete,
-                  Colors.black.withOpacity(0.7),
-                )
-              else
-                Container()
             ],
           ),
         ),
