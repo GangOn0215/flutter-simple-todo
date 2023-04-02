@@ -250,6 +250,13 @@ class _TodoscreenState extends State<Todoscreen> {
           content: const Text('전체 삭제 하시겠습니까? 🌸'),
           actions: <Widget>[
             ElevatedButton(
+              onPressed: onReset,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: _mainBackground,
+              ),
+              child: const Text('확인'),
+            ),
+            ElevatedButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -258,13 +265,6 @@ class _TodoscreenState extends State<Todoscreen> {
               ),
               child: const Text('취소'),
             ),
-            ElevatedButton(
-              onPressed: onReset,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: _mainBackground,
-              ),
-              child: const Text('확인'),
-            )
           ],
         );
       },
