@@ -72,8 +72,6 @@ class _TodoscreenState extends State<Todoscreen> {
       date: pickDate,
       todo: value,
       regDate: getCurrentDateTime(),
-      content: null,
-      updateDate: null,
     );
 
     if (todos.isEmpty) {
@@ -168,8 +166,13 @@ class _TodoscreenState extends State<Todoscreen> {
             ),
             TextButton(
               onPressed: () => _selectDate(context),
-              child: Text(pickDate,
-                  style: const TextStyle(fontSize: 16, color: Colors.white)),
+              child: Text(
+                pickDate,
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Colors.white,
+                ),
+              ),
             ),
             IconButton(
               onPressed: onClickNextDay,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:simple_todo/models/todo_model.dart';
+import 'package:simple_todo/utils/common.dart';
 
 class TodoDetailModalWidget extends StatefulWidget {
   final TodoModel todoRow;
@@ -49,11 +50,14 @@ class _TodoDetailModalWidgetState extends State<TodoDetailModalWidget> {
     }
 
     widget.todoRow.todo = tempText;
+    widget.todoRow.updateDate = getCurrentDateTime();
 
     widget.onUpdate(
       key: widget.todoRow.id,
       updateData: widget.todoRow,
     );
+
+    setState(() {});
   }
 
   @override
@@ -167,9 +171,24 @@ class _TodoDetailModalWidgetState extends State<TodoDetailModalWidget> {
                         ),
                       ),
                     ),
-                    Text(
-                      widget.todoRow.date,
-                    )
+                    if (!isEdit)
+                      Text(widget.todoRow.date)
+                    else
+                      TextButton(
+                        onPressed: () => _selectDate(context),
+                        style: TextButton.styleFrom(
+                          minimumSize: Size.zero,
+                          padding: EdgeInsets.zero,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
+                        child: Text(
+                          widget.todoRow.date,
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.normal,
+                          ),
+                        ),
+                      )
                   ],
                 ),
                 const SizedBox(
@@ -192,6 +211,25 @@ class _TodoDetailModalWidgetState extends State<TodoDetailModalWidget> {
                   ],
                 ),
                 const SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  children: [
+                    const SizedBox(
+                      width: 80,
+                      child: Text(
+                        'EditDate',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      widget.todoRow.updateDate ?? '',
+                    )
+                  ],
+                ),
+                const SizedBox(
                   height: 30,
                 ),
                 Row(
@@ -204,7 +242,8 @@ class _TodoDetailModalWidgetState extends State<TodoDetailModalWidget> {
                         child: ElevatedButton(
                           onPressed: onModifyClick,
                           style: ElevatedButton.styleFrom(
-                              backgroundColor: _mainDarkColor),
+                            backgroundColor: _mainDarkColor,
+                          ),
                           child: const Text(
                             'Modify',
                           ),
@@ -275,5 +314,37 @@ class _TodoDetailModalWidgetState extends State<TodoDetailModalWidget> {
         );
       },
     );
+  }
+
+  Future _selectDate(BuildContext context) async {
+    final DateTime? selected = await showDatePicker(
+      locale: const Locale('ko', 'KR'),
+      context: context,
+      initialDate: DateTime.parse(widget.todoRow.date),
+      firstDate: DateTime(2023),
+      lastDate: DateTime(2025),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.dark(
+              primary: _mainColor,
+              onSurface: _mainColor,
+              onPrimary: Colors.black,
+            ),
+            dialogBackgroundColor: Colors.black87,
+            textTheme: const TextTheme(
+              titleMedium: TextStyle(color: Colors.white),
+              titleLarge: TextStyle(color: Colors.white),
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+    if (selected != null) {
+      setState(() {
+        widget.todoRow.date = getCurrentDateToSelected(selected);
+      });
+    }
   }
 }
