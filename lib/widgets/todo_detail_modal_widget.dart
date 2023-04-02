@@ -38,6 +38,16 @@ class _TodoDetailModalWidgetState extends State<TodoDetailModalWidget> {
       return;
     }
 
+    FocusScopeNode currentFocus = FocusScope.of(context);
+
+    if (!currentFocus.hasPrimaryFocus) {
+      currentFocus.unfocus();
+    }
+
+    if (widget.todoRow.todo != tempText) {
+      _asyncConfirmDialog(context);
+    }
+
     widget.todoRow.todo = tempText;
 
     widget.onUpdate(
@@ -233,6 +243,37 @@ class _TodoDetailModalWidgetState extends State<TodoDetailModalWidget> {
           )
         ],
       ),
+    );
+  }
+
+  Future<void> _asyncConfirmDialog(BuildContext context) async {
+    return showDialog<void>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text(
+            '📝 수정',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          content: const Text('수정이 완료 되었습니다.'),
+          actions: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: _mainBackground,
+                  ),
+                  child: const Text('확인'),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
     );
   }
 }
